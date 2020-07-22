@@ -1,16 +1,27 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace LeetCode
 {
     class Program
     {
-        static void Main(string[] args)
+        //static void Main(string[] args)
+        //{ 
+        //    Console.WriteLine("Hello World!");
+        //}
+ 
+    }
+
+    public class TreeNode
+    {
+        public int val;
+        public TreeNode left;
+        public TreeNode right;
+        public TreeNode(int x) { val = x; }
+        public override string ToString()
         {
-            Console.WriteLine("Hello World!");
-
-            var topic = new Case_462();
-            topic.Test();
-
+            return $"{val}  ,L: {left?.val},  R: {right?.val}";
         }
     }
 }
