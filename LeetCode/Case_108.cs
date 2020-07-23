@@ -1,5 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -27,10 +26,9 @@ namespace LeetCode
     /// <summary>
     /// 
     /// </summary>
-    [TestClass]
+  
     public class Case_108 : ICase
     {
-        [TestMethod]
         public void Test()
         {
             int[] nums = new[] { -10, -3, 0, 5, 9 };

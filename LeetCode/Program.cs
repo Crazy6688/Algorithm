@@ -6,11 +6,13 @@ namespace LeetCode
 {
     class Program
     {
-        //static void Main(string[] args)
-        //{ 
-        //    Console.WriteLine("Hello World!");
-        //}
- 
+        static void Main(string[] args)
+        {
+            Console.WriteLine("Hello World!");
+            var test = new Case_464();
+            test.Test();
+        }
+
     }
 
     public class TreeNode

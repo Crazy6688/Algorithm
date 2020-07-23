@@ -1,5 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -28,10 +27,10 @@ namespace LeetCode
     /// <summary>
     /// 
     /// </summary>
-    [TestClass]
+ 
     public class Case_107 : ICase
     {
-        [TestMethod]
+      
         public void Test()
         {
             var root = new TreeNode(0);
