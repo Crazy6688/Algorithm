@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 
 namespace LeetCode
@@ -22,29 +23,85 @@ namespace LeetCode
 
         public void Test()
         {
-            var win1 = CanIWin(4, 8);
-            var win2 = CanIWin(10, 40);
-            System.Diagnostics.Debug.WriteLine($"464:{win2}");
+            var win1 = CanIWin(4, 6);
+            var win2 = CanIWin(10, 11);
+            var win3 = CanIWin(10, 40);
+            var win4 = CanIWin(18, 79);
+            //System.Diagnostics.Debug.WriteLine($"464:{win2}");
         }
 
 
         public bool CanIWin(int maxChoosableInteger, int desiredTotal)
         {
-            var www = false;
-            for (var i = 1; i <= maxChoosableInteger; i++)
-            {
+            if (maxChoosableInteger * (maxChoosableInteger - 1) / 2 < desiredTotal)
+                return false;
+            if (maxChoosableInteger >= desiredTotal)
+                return true;
 
-                //var bs = new int[maxChoosableInteger];
-                //bs[i - 1] = 1;
-                //var w = win(bs, i, 1, desiredTotal);
-                //if (w)
-                //{
-                //    www = true;
-                //}
+            var hhh = helper(maxChoosableInteger, desiredTotal, new Boolean[1 << maxChoosableInteger], 0);
+
+
+            //Console.WriteLine($"CanIWin=>{maxChoosableInteger},{desiredTotal}!");
+            //for (var i = 1; i <= maxChoosableInteger; i++)
+            //{
+            //    var www = win(1 << i, new Dictionary<int, int>() { { 1, i } }, maxChoosableInteger, 0, desiredTotal);
+            //    if (!www)
+            //        return false;
+            //}
+            if (hhh)
+                Console.WriteLine($"{maxChoosableInteger},{desiredTotal},先手稳赢!");
+            return true;
+        }
+
+
+        bool win(int flag, Dictionary<int, int> seq, int max, int total, int desireTotal)
+        {
+            //A表示先手 
+            var loop = BitOperations.PopCount((uint)flag) + 1;
+            //  var role = loop % 2 == 0 ? 'A' : 'B';
+
+            for (var i = 1; i <= max; i++)
+            {
+                if ((flag & (1 << i)) > 0)
+                    continue;
+                var newflag = flag;
+                newflag |= (1 << i);
+                seq[loop] = i;
+                var newTotal = total + i;
+
+                if (newTotal >= desireTotal ||
+                    win(newflag, seq, max, newTotal, desireTotal) == false)
+                {
+                    return true;
+                }
             }
 
-            return www;
+            return false;
+
         }
-         
+
+        public bool helper(int maxChoosableInteger, int desiredTotal, bool[] dp, int state)
+        {
+            if (dp[state] != false)
+                return dp[state];
+            for (int i = 1; i <= maxChoosableInteger; i++)
+            {
+                int cur = 1 << (i - 1);
+                if ((cur & state) != 0)
+                    continue;
+
+                // 如果当前选择使得累积和大于等于desiredTotal
+                // 又或者当前选择之后，另一个人的选择必输，说明当前必赢
+                if (desiredTotal - i <= 0 ||
+                    helper(maxChoosableInteger, desiredTotal - i, dp, state | cur) == false)
+                {
+                    return dp[state] = true;
+                }
+            }
+
+            // 无论怎么选都无法让对手输，那么就是自己输了
+            return dp[state] = false;
+        }
+
     }
 }
