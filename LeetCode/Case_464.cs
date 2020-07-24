@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using System.Runtime.InteropServices;
 using System.Text;
 
 namespace LeetCode
@@ -25,18 +23,11 @@ namespace LeetCode
 
         public void Test()
         {
-            //10,11,false
-            //4,6,true
-            //10,40,false
-            //18.79,true
-
-            var win0 = CanIWin(10,11);
-         //   var win1 = CanIWin(4, 6);
-
-            //  var wina = CanIWin(4, 7);
-
-         //   var win2 = CanIWin(10, 40);
-         //   var win3 = CanIWin(18, 79);
+            var win1 = CanIWin(4, 6);
+            var win2 = CanIWin(10, 11);
+            var win3 = CanIWin(10, 40);
+            var win4 = CanIWin(18, 79);
+            //System.Diagnostics.Debug.WriteLine($"464:{win2}");
         }
 
 
@@ -44,46 +35,72 @@ namespace LeetCode
         {
             if (maxChoosableInteger * (maxChoosableInteger - 1) / 2 < desiredTotal)
                 return false;
+            if (maxChoosableInteger >= desiredTotal)
+                return true;
 
-            var w = loop(0, maxChoosableInteger, 0, desiredTotal);
-            if (w)
-            {
+            var hhh = helper(maxChoosableInteger, desiredTotal, new Boolean[1 << maxChoosableInteger], 0);
+
+
+            //Console.WriteLine($"CanIWin=>{maxChoosableInteger},{desiredTotal}!");
+            //for (var i = 1; i <= maxChoosableInteger; i++)
+            //{
+            //    var www = win(1 << i, new Dictionary<int, int>() { { 1, i } }, maxChoosableInteger, 0, desiredTotal);
+            //    if (!www)
+            //        return false;
+            //}
+            if (hhh)
                 Console.WriteLine($"{maxChoosableInteger},{desiredTotal},先手稳赢!");
+            return true;
+        }
+
+
+        bool win(int flag, Dictionary<int, int> seq, int max, int total, int desireTotal)
+        {
+            //A表示先手 
+            var loop = BitOperations.PopCount((uint)flag) + 1;
+            //  var role = loop % 2 == 0 ? 'A' : 'B';
+
+            for (var i = 1; i <= max; i++)
+            {
+                if ((flag & (1 << i)) > 0)
+                    continue;
+                var newflag = flag;
+                newflag |= (1 << i);
+                seq[loop] = i;
+                var newTotal = total + i;
+
+                if (newTotal >= desireTotal ||
+                    win(newflag, seq, max, newTotal, desireTotal) == false)
+                {
+                    return true;
+                }
             }
-            return w;
+
+            return false;
 
         }
 
-        /// <summary>
-        /// 返回值: 如果为true,表示当前获取数据的用户稳赢,非常重要的观点,递归的方法返回的是当前用户选择后是否稳赢
-        /// </summary>
-        /// <param name="bs"></param>
-        /// <param name="total"></param>
-        /// <param name="desiredTotal"></param>
-        bool loop(int bs, int count, int total, int desiredTotal)
+        public bool helper(int maxChoosableInteger, int desiredTotal, bool[] dp, int state)
         {
-            for (var i = 0; i < count; i++)
+            if (dp[state] != false)
+                return dp[state];
+            for (int i = 1; i <= maxChoosableInteger; i++)
             {
-                if ((bs & (1 << i)) > 0)
+                int cur = 1 << (i - 1);
+                if ((cur & state) != 0)
                     continue;
 
-                var nbs = bs + (1 << i);
-                var newTotal = total + (i + 1);
-                if (newTotal >= desiredTotal)
-                    return true;
-                else
+                // 如果当前选择使得累积和大于等于desiredTotal
+                // 又或者当前选择之后，另一个人的选择必输，说明当前必赢
+                if (desiredTotal - i <= 0 ||
+                    helper(maxChoosableInteger, desiredTotal - i, dp, state | cur) == false)
                 {
-                    //对方开始选
-                    var ret = loop(nbs, count, newTotal, desiredTotal);
-                    //对方稳赢,那我就输了,这是重点
-                    if (ret)//对方稳输,那我稳赢
-                        return false;
-                    if (bs == 0)
-                        return !ret;
+                    return dp[state] = true;
                 }
             }
-            //疑惑,这里返回true
-            return true;
+
+            // 无论怎么选都无法让对手输，那么就是自己输了
+            return dp[state] = false;
         }
 
     }
